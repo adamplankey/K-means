@@ -1,3 +1,4 @@
+import pandas as pd
 import random
 import math
 import matplotlib.pyplot as plt
@@ -94,23 +95,17 @@ def k_means_with_elbow(data, max_k=10, max_iterations=100, tolerance=1e-4):
 
     return inertias_per_k
 
-# Step 7: Generate sample data
-def generate_data(n_points=500, n_clusters=4, spread=1.0):
-    random.seed(42)
-    data = []
-    centers = [(random.uniform(-10, 10), random.uniform(-10, 10)) for _ in range(n_clusters)]
-    for cx, cy in centers:
-        for _ in range(n_points // n_clusters):
-            point = (random.gauss(cx, spread), random.gauss(cy, spread))
-            data.append(point)
-    random.shuffle(data)
-    return data
+# Step 7: Load and preprocess CSV data
+def load_and_preprocess_csv(file_path):
+    data = pd.read_csv(file_path)
+    data['type_encoded'] = data['type'].astype('category').cat.codes
+    features = data[['MA', 'bedrooms', 'type_encoded']].values.tolist()
+    return features
 
-# Step 8: Test the implementation
+# Step 8: Test with CSV Data
 if __name__ == "__main__":
-    # Generate data
-    data = generate_data()
-    
-    # Run K-Means with Elbow Method visualization
-    max_k = 6
+    file_path = 'ma_lga_12345.csv'
+    data = load_and_preprocess_csv(file_path)
+    max_k = 5
     inertias = k_means_with_elbow(data, max_k=max_k)
+
