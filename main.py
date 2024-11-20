@@ -69,8 +69,8 @@ def k_means_with_elbow(data, max_k=10, max_iterations=100, tolerance=1e-4):
             plt.scatter(centroid_x, centroid_y, color='black', marker='X', s=200, label='Centroids')
 
             plt.title(f"K-Means Clustering - k={k}, Iteration {iteration}")
-            plt.xlabel("Feature 1")
-            plt.ylabel("Feature 2")
+            plt.xlabel("Annual Income (k$)")
+            plt.ylabel("Spending Score")
             plt.legend()
             plt.pause(0.5)  # Pause to display each iteration graph
             
@@ -95,17 +95,22 @@ def k_means_with_elbow(data, max_k=10, max_iterations=100, tolerance=1e-4):
 
     return inertias_per_k
 
-# Step 7: Load and preprocess CSV data
-def load_and_preprocess_csv(file_path):
-    data = pd.read_csv(file_path)
-    data['type_encoded'] = data['type'].astype('category').cat.codes
-    features = data[['MA', 'bedrooms', 'type_encoded']].values.tolist()
-    return features
+# Step 7: Load and preprocess the dataset from CSV
+def load_customer_data(file_path):
+    df = pd.read_csv(file_path)
+    features = df[['Annual Income (k$)', 'Spending Score (1-100)']].values.tolist()
+    labels = df['CustomerID'].astype(str).tolist()  # Use CustomerID as labels for plotting
+    return features, labels
 
-# Step 8: Test with CSV Data
+# Step 8: Test with Customer Data
 if __name__ == "__main__":
-    file_path = 'ma_lga_12345.csv'
-    data = load_and_preprocess_csv(file_path)
-    max_k = 5
+    # File path to the CSV file
+    file_path = 'Mall_Customers.csv'  # Ensure this file exists in the working directory
+
+    # Load data
+    data, labels = load_customer_data(file_path)
+    
+    # Run K-Means with Elbow Method visualization
+    max_k = 10
     inertias = k_means_with_elbow(data, max_k=max_k)
 
